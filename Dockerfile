@@ -89,10 +89,13 @@ RUN true \
     && apt-get update \
     && if [ "${downloadUrl#*CLion}" != "$downloadUrl" ]; then apt-get install build-essential clang -y; else echo "Not CLion"; fi \
     && if [ "${downloadUrl#*pycharm}" != "$downloadUrl" ]; then apt-get install python2 python3 python3-distutils python3-pip python3-setuptools -y; else echo "Not pycharm"; fi \
-    && if [ "${downloadUrl#*rider}" != "$downloadUrl" ]; then apt install apt-transport-https dirmngr gnupg ca-certificates -y && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && echo "deb https://download.mono-project.com/repo/debian stable-buster main" | tee /etc/apt/sources.list.d/mono-official-stable.list && apt update && apt install mono-devel -y && apt install wget -y && wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb && apt-get update && apt-get install -y apt-transport-https; else echo "Not rider"; fi \
-    && if [ "${downloadUrl#*rider}" != "$downloadUrl" ]; then wget https://download.visualstudio.microsoft.com/download/pr/5d245f70-4e8f-457a-9c4f-d4140136e496/56193e7de38e0f4101eb6f3fd2c60c41/aspnetcore-runtime-3.1.21-linux-arm64.tar.gz && wget https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm64.tar.gz && sudo mkdir -p /usr/share/dotnet && sudo tar -zxf dotnet-sdk-latest-linux-arm64.tar.gz -C /usr/share/dot-net && sudo tar -zxf aspnetcore-runtime-3.1.21-linux-arm64.tar.gz -C /usr/share/dot-net && sudo ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && rm dotnet-sdk-latest-linux-arm64.tar.gz; else echo "Not rider"; fi \
+    && if [ "${downloadUrl#*rider}" != "$downloadUrl" ]; then apt install apt-transport-https dirmngr gnupg ca-certificates -y && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && echo "deb https://download.mono-project.com/repo/debian stable-buster main" | tee /etc/apt/sources.list.d/mono-official-stable.list && apt update && apt install mono-devel -y && apt install wget -y && wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb && apt-get update && apt-get install -y apt-transport-https; else echo "Not rider"; fi
+
+# Download dotnet and aspnet and install
+RUN true && if [ "${downloadUrl#*rider}" != "$downloadUrl" ]; then wget https://download.visualstudio.microsoft.com/download/pr/5d245f70-4e8f-457a-9c4f-d4140136e496/56193e7de38e0f4101eb6f3fd2c60c41/aspnetcore-runtime-3.1.21-linux-arm64.tar.gz && wget https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm64.tar.gz && mkdir -p /usr/share/dotnet && tar -zxf dotnet-sdk-latest-linux-arm64.tar.gz -C /usr/share/dot-net && tar -zxf aspnetcore-runtime-3.1.21-linux-arm64.tar.gz -C /usr/share/dot-net && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && rm dotnet-sdk-latest-linux-arm64.tar.gz; else echo "Not rider"; fi
+
 # clean apt to reduce image size:
-    && rm -rf /var/lib/apt/lists/* \
+RUN true && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt
 
 # copy the Projector dir:
